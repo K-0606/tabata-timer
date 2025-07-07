@@ -147,7 +147,7 @@ const Timer = () => {
         />
       </div>
 
-      <h2>{mode === "work" ? "🔥 運動中" : "💤 休息中"}</h2>
+      <h2>{mode === "work" ? "🔥運動中🔥" : "💤休息中💤"}</h2>
       {/* <h2>剩餘：{(timeLeft / 1000).toFixed(displayPrecision)} 秒</h2> */}
       <h4>
         第 {currentRound} 組 / 共 {totalRounds} 組
@@ -170,7 +170,7 @@ const Timer = () => {
         }}
       >
         <div>
-          <h3>運動時間（秒）</h3>
+          <h3>運動時間(秒)</h3>
           <input
             type="number"
             min="0"
@@ -181,7 +181,7 @@ const Timer = () => {
         </div>
 
         <div>
-          <h3>休息時間（秒）</h3>
+          <h3>休息時間(秒)</h3>
           <input
             type="number"
             min="0"
