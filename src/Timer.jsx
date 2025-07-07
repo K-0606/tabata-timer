@@ -5,8 +5,8 @@ import useSound from "use-sound";
 import "./Timer.css";
 
 const Timer = () => {
-  const [workDuration, setWorkDuration] = useState(11000);
-  const [restDuration, setRestDuration] = useState(10000);
+  const [workDuration, setWorkDuration] = useState(30000);
+  const [restDuration, setRestDuration] = useState(30000);
   const [timeLeft, setTimeLeft] = useState(workDuration);
   const [isRunning, setIsRunning] = useState(false);
   const [mode, setMode] = useState("work");
@@ -50,29 +50,30 @@ const Timer = () => {
         clearInterval(timerRef.current);
         setIsRunning(false);
         setIsFinished(true);
-        playWinSound(); // 播放結束音效
+        playWinSound();
 
         if (mode === "work") {
-          // 運動完 → 休息
-          setTimeout(() => {
-            setMode("rest");
-            setTimeLeft(restDuration); // 重置為休息時間
-            setIsFinished(false);
-            setIsRunning(true);
-          }, 0);
-        } else if (mode === "rest") {
           if (currentRound < totalRounds) {
-            // 下一組
             setTimeout(() => {
-              setMode("work");
-              setTimeLeft(workDuration); // 重置為運動時間
-              setCurrentRound((prev) => prev + 1);
+              setMode("rest");
+              setTimeLeft(restDuration);
               setIsFinished(false);
               setIsRunning(true);
             }, 0);
           } else {
-            // 所有組數結束
-            alert("所有訓練組數完成！🎉");
+            setMode("done");
+            setIsFinished(true);
+            setIsRunning(false);
+          }
+        } else if (mode === "rest") {
+          if (currentRound < totalRounds) {
+            setTimeout(() => {
+              setMode("work");
+              setTimeLeft(workDuration);
+              setCurrentRound((prev) => prev + 1);
+              setIsFinished(false);
+              setIsRunning(true);
+            }, 0);
           }
         }
       }
@@ -130,13 +131,11 @@ const Timer = () => {
 
   return (
     <div className="timer-content">
-      <div
-        className={`progress-ring ${percentage > 80 ? "warning-ring" : ""}`}
-      >
+      <div className={`progress-ring ${percentage > 80 ? "warning-ring" : ""}`}>
         <CircularProgressbar
           key={mode + timeLeft} // 每次模式變換或剩餘時間變化時強制重渲染
           value={percentage}
-          text={`${(timeLeft / 1000).toFixed(displayPrecision)}s`}
+          text={`${(timeLeft / 1000).toFixed(displayPrecision)}`}
           styles={buildStyles({
             pathColor: getProgressColor(),
             textColor: "#333",
@@ -148,37 +147,61 @@ const Timer = () => {
         />
       </div>
 
-      <h1>{mode === "work" ? "🔥 運動中" : "💤 休息中"}</h1>
-      <h2>剩餘：{(timeLeft / 1000).toFixed(displayPrecision)} 秒</h2>
-      <h4>第 {currentRound} 組 / 共 {totalRounds} 組</h4>
-      <button onClick={handleStart}>開始</button>
-      <button onClick={handlePause}>暫停</button>
+      <h2>{mode === "work" ? "🔥 運動中" : "💤 休息中"}</h2>
+      {/* <h2>剩餘：{(timeLeft / 1000).toFixed(displayPrecision)} 秒</h2> */}
+      <h4>
+        第 {currentRound} 組 / 共 {totalRounds} 組
+      </h4>
+      <button onClick={isRunning ? handlePause : handleStart}>
+        {isRunning ? "暫停" : "開始"}
+      </button>
+      {/* <button onClick={handlePause}>暫停</button> */}
       <button onClick={handleReset}>重設</button>
-      <button onClick={togglePrecision}>切換精度</button>
+      <button onClick={togglePrecision}>
+        {displayPrecision == 0 ? "切換成毫秒" : "切換成秒"}
+      </button>
 
-      <h3>運動時間（秒）</h3>
-      <input
-        type="number"
-        min="0"
-        value={workDuration / 1000}
-        onChange={handleWorkDurationChange}
-      />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "20px",
+          padding: "0 20px",
+        }}
+      >
+        <div>
+          <h3>運動時間（秒）</h3>
+          <input
+            type="number"
+            min="0"
+            value={workDuration / 1000}
+            onChange={handleWorkDurationChange}
+            style={{ width: "80px", fontSize: "1rem" }}
+          />
+        </div>
 
-      <h3>休息時間（秒）</h3>
-      <input
-        type="number"
-        min="0"
-        value={restDuration / 1000}
-        onChange={handleRestDurationChange}
-      />
+        <div>
+          <h3>休息時間（秒）</h3>
+          <input
+            type="number"
+            min="0"
+            value={restDuration / 1000}
+            onChange={handleRestDurationChange}
+            style={{ width: "80px", fontSize: "1rem" }}
+          />
+        </div>
 
-      <h3>組數</h3>
-      <input 
-        type="number" 
-        min="0"
-        value={totalRounds}
-        onChange={handleTotalRoundsChange}
-      />
+        <div>
+          <h3>組數</h3>
+          <input
+            type="number"
+            min="0"
+            value={totalRounds}
+            onChange={handleTotalRoundsChange}
+            style={{ width: "80px", fontSize: "1rem" }}
+          />
+        </div>
+      </div>
 
       {isFinished && <h2>🎉 時間到了！</h2>}
     </div>
