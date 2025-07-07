@@ -1,3 +1,9 @@
+Hi, everyone! This is a workout timer that you can use during your training sessions.
+If you have any ideas or suggestions, feel free to let me know-I'd love to keep improving this project. Hope you find it helpful!
+I put the timer on the Netlify!
+https://lovely-paprenjak-91dfbd.netlify.app/
+
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
